@@ -33,7 +33,7 @@ Las contribuciones son bienvenidas. Abre un issue o un pull request. Si eres de 
 
 ## Licencia
 
-MIT License © 2025 Makers Bierzo
+MIT License © 2026 Makers Bierzo
 
 ---
 

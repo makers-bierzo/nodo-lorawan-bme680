@@ -8,8 +8,8 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "/Users/moises/Documents/PROYECTOS/Redytel/nodo-cc-deveui/include",
-                "/Users/moises/Documents/PROYECTOS/Redytel/nodo-cc-deveui/src",
+                "/Users/moises/Documents/MakersBierzo/nodo-lorawan-bme680/software/01-nodo-cc-deveui/include",
+                "/Users/moises/Documents/MakersBierzo/nodo-lorawan-bme680/software/01-nodo-cc-deveui/src",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/LoRa/src",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/DISPLAY/src",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/RGB/src",
@@ -46,8 +46,8 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "/Users/moises/Documents/PROYECTOS/Redytel/nodo-cc-deveui/include",
-                    "/Users/moises/Documents/PROYECTOS/Redytel/nodo-cc-deveui/src",
+                    "/Users/moises/Documents/MakersBierzo/nodo-lorawan-bme680/software/01-nodo-cc-deveui/include",
+                    "/Users/moises/Documents/MakersBierzo/nodo-lorawan-bme680/software/01-nodo-cc-deveui/src",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/LoRa/src",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/DISPLAY/src",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/RGB/src",

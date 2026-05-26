@@ -23,8 +23,9 @@ void setup() {
     CyGetUniqueId(uniqueId);
   #endif
   Serial.print("0x");
-  Serial.print(uniqueId[0], HEX);
-  Serial.print(uniqueId[1], HEX);
+  // Serial.print(uniqueId[0], HEX);
+  // Serial.print(uniqueId[1], HEX);
+  Serial.printf("%08X%08X", uniqueId[0], uniqueId[1]);
   Serial.println();
   Serial.println();
   
