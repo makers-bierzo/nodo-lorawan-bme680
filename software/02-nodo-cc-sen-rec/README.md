@@ -84,7 +84,7 @@ uint32_t appTxDutyCycle = 15000;  // ms — cambia este valor (mínimo recomenda
 Al encender el dispositivo verás algo similar a esto a 115200 baudios:
 
 ```
-DevEUI : 1A-C8-F7-02-90-3D-5B-00
+DevEUI : 00-5B-3D-90-02-F7-C8-1A
 AppEUI : 00-00-00-00-00-00-00-00
 AppKey : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 CLASS  : A

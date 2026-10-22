@@ -29,15 +29,15 @@ Para registrar el dispositivo en TTN con activación **OTAA** (la más común y 
 
     Chip Unique ID: 0x02F7C81A005B3D90
 
-    DevEUI (LSB): 00-5B-3D-90-02-F7-C8-1A
+    DevEUI (LSB - for LoRaWAN/TTN): 00-5B-3D-90-02-F7-C8-1A
 
-    DevEUI (MSB - for LoRaWAN): 1A-C8-F7-02-90-3D-5B-00
+    DevEUI (MSB/reversed): 1A-C8-F7-02-90-3D-5B-00
 
-    Use the MSB format (second one) for your LoRaWAN server.
+    Use the LSB format (first one) for your LoRaWAN server (TTN).
     =================================
     ```
 
-2. **Anota el DevEUI en formato MSB** (la segunda línea). Es el que usa TTN.
+2. **Anota el DevEUI en formato LSB** (la primera línea). Es el que va en el JoinRequest y el que hay que registrar en TTN (verificado con el nodo funcionando).
 
 3. **En TTN** ve a *Applications → tu app → End devices → Register end device* e introduce el DevEUI. TTN te generará el AppEUI y el AppKey.
 
@@ -63,10 +63,10 @@ En resumen: el DevEUI no es más que los 64 bits del Chip Unique ID reordenados,
 
 ## Formato LSB vs MSB
 
-La salida muestra el DevEUI en dos formatos porque distintos servidores LoRaWAN usan convenciones distintas:
+La salida muestra el DevEUI en dos formatos porque distintas herramientas y servidores usan convenciones distintas:
 
-- **LSB** (Least Significant Byte first): algunos entornos como Arduino lo esperan así internamente.
-- **MSB** (Most Significant Byte first): es el formato estándar LoRaWAN que usa TTN y ChirpStack.
+- **LSB** (Least Significant Byte first): los EUI se transmiten por el aire en este orden (especificación LoRaWAN). La pila del CubeCell manda el array `devEui[]` tal cual en el JoinRequest, así que el servidor LoRaWAN identifica el dispositivo con este orden de bytes. **Es el formato que hay que registrar en TTN** (probado en la práctica con este nodo).
+- **MSB** (Most Significant Byte first): el mismo EUI con los bytes invertidos (big-endian). Algunos servidores y herramientas lo usan. Si un Join falla con una convención, prueba la otra; lo importante es que el valor registrado coincida con lo que el servidor recibe en el JoinRequest.
 
 ## Hardware compatible
 

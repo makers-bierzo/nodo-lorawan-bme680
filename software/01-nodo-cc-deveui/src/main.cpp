@@ -38,7 +38,7 @@ void setup() {
   Serial.println();
   Serial.println();
   
-  Serial.print("DevEUI (MSB - for LoRaWAN): ");
+  Serial.print("DevEUI (MSB/reversed): ");
   for(int i = 7; i >= 0; i--)
   {
     Serial.printf("%02X", devEui[i]);
@@ -47,18 +47,18 @@ void setup() {
   Serial.println();
   Serial.println();
   
-  Serial.println("Use the MSB format (second one) for your LoRaWAN server.");
+  Serial.println("Use the LSB format (first one) for your LoRaWAN server (TTN).");
   Serial.println("=================================");
 }
 
 void loop() {
   delay(10000);
   
-  Serial.println("DevEUI (MSB): ");
-  for(int i = 7; i >= 0; i--)
+  Serial.println("DevEUI (LSB): ");
+  for(int i = 0; i < 8; i++)
   {
     Serial.printf("%02X", devEui[i]);
-    if(i > 0) Serial.print("-");
+    if(i < 7) Serial.print("-");
   }
   Serial.println();
 }
