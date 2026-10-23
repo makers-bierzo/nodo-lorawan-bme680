@@ -98,6 +98,24 @@ A partir de ahí, cada 15 segundos (configurable) se envía un uplink y el dispo
 
 ---
 
+## Capturas del resultado
+
+### Selección del dispositivo en The Things Stack
+
+![Selección del modelo Heltec CubeCell al registrar un dispositivo](./docs/Cap_01.png)
+
+### Datos del dispositivo registrado
+
+![Formulario de registro del dispositivo en The Things Stack](./docs/Cap_02.png)
+
+### Join y mensajes uplink recibidos
+
+![Join aceptado y primer mensaje uplink recibido en The Things Stack](./docs/Cap_03.png)
+
+![Mensajes uplink recibidos en la consola de The Things Stack](./docs/Cap_04.png)
+
+---
+
 ## Hardware compatible
 
 - Heltec CubeCell Board v2 (ASR6501)

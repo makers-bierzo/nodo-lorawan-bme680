@@ -1,14 +1,35 @@
 #include <Arduino.h>
 #include <BME680.h>
+#include <CubeCell_NeoPixel.h>
 #include <math.h>
 
 namespace {
 
 constexpr uint32_t SERIAL_SPEED = 115200;
-constexpr unsigned long READ_INTERVAL_MS = 1000;
-constexpr float SEA_LEVEL_PRESSURE_HPA = 1013.25F;
+constexpr unsigned long READ_INTERVAL_MS = 5000;
+constexpr float SEA_LEVEL_PRESSURE_HPA = 1029.0F;
+constexpr uint8_t RGB_BRIGHTNESS = 32;
 
 BME680_Class bme680;
+CubeCell_NeoPixel pixels(1, RGB, NEO_GRB + NEO_KHZ800);
+uint8_t nextRgbColor = 0;
+
+void showNextRgbColor() {
+  switch (nextRgbColor) {
+    case 0:
+      pixels.setPixelColor(0, pixels.Color(255, 0, 0));
+      break;
+    case 1:
+      pixels.setPixelColor(0, pixels.Color(0, 255, 0));
+      break;
+    default:
+      pixels.setPixelColor(0, pixels.Color(0, 0, 255));
+      break;
+  }
+
+  pixels.show();
+  nextRgbColor = (nextRgbColor + 1) % 3;
+}
 
 void configureBme680() {
   bme680.setOversampling(TemperatureSensor, Oversample16);
@@ -50,7 +71,7 @@ void printReading() {
 
   Serial.print("Altitud aprox.: ");
   Serial.print(calculateAltitudeMeters(pressureHpa), 2);
-  Serial.println(" m (nivel del mar: 1013.25 hPa)");
+  Serial.println(" m (nivel del mar: 1029.0 hPa)");
 
   Serial.print("Resistencia de gas: ");
   Serial.print(gasMilliOhms, 2);
@@ -67,6 +88,11 @@ void setup() {
   digitalWrite(Vext, LOW);
   delay(500);
 
+  pixels.begin();
+  pixels.setBrightness(RGB_BRIGHTNESS);
+  pixels.clear();
+  pixels.show();
+
   Serial.println();
   Serial.println("CubeCell - Lectura del BME680 (Heltec)");
 
@@ -76,10 +102,11 @@ void setup() {
   }
 
   configureBme680();
-  Serial.println("BME680 inicializado. Lecturas cada segundo.");
+  Serial.println("BME680 inicializado. Lecturas cada 5 segundos; RGB rojo, verde y azul.");
 }
 
 void loop() {
   printReading();
+  showNextRgbColor();
   delay(READ_INTERVAL_MS);
 }

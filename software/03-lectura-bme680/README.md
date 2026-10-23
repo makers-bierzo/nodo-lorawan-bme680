@@ -1,6 +1,6 @@
 # 03 - Lectura del sensor BME680
 
-Ejemplo independiente para comprobar un BME680 conectado a una Heltec CubeCell. Usa la clase `BME680_Class` incluida en el framework de Heltec, lee temperatura, humedad, presión y resistencia de gas por I²C y muestra los valores por el monitor serie. No realiza una conexión LoRaWAN ni calcula un índice IAQ.
+Ejemplo independiente para comprobar un BME680 conectado a una Heltec CubeCell. Usa la clase `BME680_Class` incluida en el framework de Heltec, lee temperatura, humedad, presión y resistencia de gas por I²C, muestra los valores por el monitor serie y cambia el LED RGB integrado entre rojo, verde y azul en cada lectura. No realiza una conexión LoRaWAN ni calcula un índice IAQ.
 
 ## Hardware
 
@@ -12,29 +12,38 @@ Conecta SDA y SCL a las líneas I²C de la CubeCell o de la placa adaptadora. Co
 
 La clase de Heltec busca automáticamente el sensor en las direcciones I²C habituales `0x76` y `0x77`.
 
+<p align="center">
+  <img src="docs/foto_sensor.jpg" alt="CubeCell con el LED RGB encendido" width="360">
+</p>
+
 ## Compilar y cargar
 
 Abre esta carpeta como proyecto PlatformIO, compila y carga el firmware. No se necesita instalar otra biblioteca: `BME680_Class` forma parte de `Sensor_ThirdParty` del framework CubeCell.
 
-Abre el monitor serie a **115200 baudios**. La salida será similar a:
+Abre el monitor serie a **115200 baudios**. El sensor se lee cada 5 segundos y el LED RGB avanza por los colores rojo, verde y azul tras cada lectura. La salida será similar a:
 
 ```text
 CubeCell - Lectura del BME680 (Heltec)
-BME680 inicializado. Lecturas cada segundo.
+BME680 inicializado. Lecturas cada 5 segundos; RGB rojo, verde y azul.
 ------------------------------
 Temperatura: 23.41 °C
 Humedad:     46.20 %
 Presion:     1008.35 hPa
-Altitud aprox.: 40.87 m (nivel del mar: 1013.25 hPa)
+Altitud aprox.: 170.69 m (nivel del mar: 1029.00 hPa)
 Resistencia de gas: 2874.00 mOhm
 ```
 
 Los valores del ejemplo son ilustrativos y variarán según el sensor y el entorno.
 
+## Resultado
+
+![Captura del programa mostrando las lecturas del BME680 en el monitor serie](docs/result.png)
+
 ## Notas
 
 - La lectura de gas es una resistencia, no un índice IAQ ni una medición directa de CO₂ o TVOC.
-- La altitud es una estimación calculada suponiendo una presión al nivel del mar de 1013,25 hPa.
+- El brillo del LED RGB se ajusta con `RGB_BRIGHTNESS` (actualmente 32 sobre 255).
+- La altitud es una estimación calculada suponiendo una presión al nivel del mar configurable en `SEA_LEVEL_PRESSURE_HPA` (actualmente 1029 hPa).
 - La clase Heltec expresa temperatura en centésimas de °C, humedad en milésimas de porcentaje, presión en Pa y gas con la escala que imprime el ejemplo oficial (`gas / 100`, mOhm).
 - Si no aparece el sensor, comprueba Vext, GND, SDA y SCL.
 
