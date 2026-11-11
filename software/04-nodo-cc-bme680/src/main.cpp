@@ -6,10 +6,7 @@
 /* Credenciales OTAA: sustituye JoinEUI y AppKey por las de tu servidor. */
 uint8_t devEui[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 uint8_t appEui[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-uint8_t appKey[] = {
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
+uint8_t appKey[] = { 0x39, 0x95, 0xCB, 0xF1, 0x1E, 0x45, 0x30, 0x86, 0x71, 0x39, 0x14, 0x38, 0xB5, 0x87, 0x56, 0xB7 };
 
 /* Símbolos requeridos por el framework aunque este ejemplo use OTAA. */
 uint8_t nwkSKey[] = {
@@ -41,6 +38,8 @@ namespace {
 constexpr uint32_t SENSOR_POWER_SETTLE_MS = 500;
 constexpr uint32_t SENSOR_STARTUP_MS = 1000;
 constexpr uint32_t SENSOR_FIRST_SAMPLE_WAIT_MS = 500;
+constexpr uint8_t SENSOR_DETECT_ATTEMPTS = 3;
+constexpr uint32_t SENSOR_I2C_RETRY_MS = 100;
 constexpr float SEA_LEVEL_PRESSURE_HPA = 1013.25F;
 
 BME680_Class bme680;
@@ -66,8 +65,24 @@ bool readBme680(int32_t &temperatureRaw,
   powerSensor(true);
   delay(SENSOR_POWER_SETTLE_MS);
 
-  if (!bme680.begin(I2C_STANDARD_MODE)) {
+  bool sensorFound = false;
+  for (uint8_t attempt = 0; attempt < SENSOR_DETECT_ATTEMPTS; ++attempt) {
+    // begin() vuelve a iniciar Wire internamente. En CubeCell, Wire.begin()
+    // también intenta recuperar el bus si quedó bloqueado tras el sueño.
+    if (Wire.begin() && bme680.begin(I2C_STANDARD_MODE)) {
+      sensorFound = true;
+      break;
+    }
+
+    Wire.end();
+    if (attempt + 1 < SENSOR_DETECT_ATTEMPTS) {
+      delay(SENSOR_I2C_RETRY_MS);
+    }
+  }
+
+  if (!sensorFound) {
     Serial.println("ERROR: no se encuentra el BME680 en 0x76 ni 0x77.");
+    Wire.end();
     powerSensor(false);
     return false;
   }
@@ -85,6 +100,8 @@ bool readBme680(int32_t &temperatureRaw,
   delay(SENSOR_FIRST_SAMPLE_WAIT_MS);
   bme680.getSensorData(temperatureRaw, humidityRaw, pressureRaw, gasRaw);
 
+  // Deja el periférico I2C detenido durante el ciclo de sueño LoRaWAN.
+  Wire.end();
   powerSensor(false);
   return true;
 }

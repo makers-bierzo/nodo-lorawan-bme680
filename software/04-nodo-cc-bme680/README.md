@@ -67,6 +67,24 @@ function decodeUplink(input) {
 }
 ```
 
+## Capturas de The Things Stack
+
+Una vez que el dispositivo se une a la red, sus uplinks aparecen en los datos en vivo:
+
+![Uplinks recibidos del dispositivo BME680](docs/result_01.png)
+
+En la aplicación de The Things Stack, configura el formatter de uplink con el decoder anterior:
+
+![Configuración del formatter de uplink en The Things Stack](docs/result_02.png)
+
+El código del formatter debe decodificar el payload de 10 bytes del nodo:
+
+![Decoder JavaScript del payload del BME680](docs/result_03.png)
+
+The Things Stack muestra también las mediciones ya decodificadas:
+
+![Datos del BME680 decodificados en The Things Stack](docs/result_04.png)
+
 ## Compilar y comprobar
 
 Abre esta carpeta como proyecto PlatformIO, compila y carga el firmware. Abre el monitor serie a **115200 baudios**. En los eventos de TTN, selecciona el puerto 2 y comprueba que el payload decodificado contiene las cuatro mediciones.
