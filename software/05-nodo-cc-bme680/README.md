@@ -1,0 +1,99 @@
+# 05 - Nodo CubeCell LoRaWAN con BME680
+
+Ejemplo de nodo CubeCell que mide temperatura, humedad, presión y resistencia de gas con el BME680, además de la tensión de batería de la placa, y transmite esos valores por LoRaWAN OTAA. Sigue el ciclo de estados de los ejemplos Heltec. El sensor se alimenta desde Vext durante la medición y se apaga antes del periodo de sueño.
+
+No calcula IAQ: la lectura de resistencia de gas no es por sí sola un índice de calidad del aire.
+
+## Hardware y conexiones
+
+- Heltec CubeCell Board compatible con `cubecell_board_v2`.
+- Módulo BME680 conectado a I²C.
+- `Vext` de CubeCell a VCC del módulo; GND común; SDA y SCL a las líneas I²C.
+
+La clase `BME680_Class` de Heltec localiza automáticamente el dispositivo en `0x76` o `0x77`. Vext es activo en bajo y se apaga durante el ciclo LoRaWAN; por eso el VCC del sensor debe conectarse a Vext para aprovechar el ahorro de energía.
+
+## Configuración OTAA
+
+En `src/main.cpp`, sustituye `appEui` (JoinEUI) y `appKey` por los valores de tu servidor. `devEui` se genera automáticamente desde el Chip ID (`lorawan.deveui = AUTO`). Registra en TTN el DevEUI en el formato LSB que has comprobado con tu CubeCell. No copies claves de ejemplo de otros sketches.
+
+La región está configurada como **EU868**, clase A, ADR activo y uplinks no confirmados. El intervalo inicial es 90 segundos (`appTxDutyCycle`).
+
+## Medición y uplink
+
+Antes de cada uplink el programa:
+
+1. Enciende Vext y espera a que se estabilice la alimentación.
+2. Inicializa el BME680 y configura oversampling 16×, filtro IIR de 4 muestras y calentador a 320 °C durante 150 ms, como en el ejemplo de Heltec.
+3. Descarta la primera lectura y usa la siguiente para preparar el payload.
+4. Apaga Vext, lee la tensión de batería en mV y transmite el payload de 12 bytes por el puerto de aplicación 2.
+
+Si no se detecta el sensor, no se envía un payload inválido; el nodo espera al siguiente ciclo de transmisión.
+
+### Formato del payload
+
+Los campos son big-endian y aparecen en este orden:
+
+| Bytes | Tipo | Conversión |
+|---|---|---|
+| 0–1 | `int16` | Temperatura en centésimas de °C |
+| 2–3 | `uint16` | Humedad en centésimas de % |
+| 4–5 | `uint16` | Presión en décimas de hPa |
+| 6–9 | `uint32` | Resistencia de gas en centésimas de mΩ; dividir entre 100 para obtener `gas_milliohms` |
+| 10–11 | `uint16` | Tensión de batería en mV (`getBatteryVoltage()`) |
+
+En el payload formatter de TTN puedes usar este decoder:
+
+```javascript
+function decodeUplink(input) {
+  const b = input.bytes;
+  if (b.length !== 12) {
+    return { errors: ["Se esperaban 12 bytes"] };
+  }
+
+  const u16 = (i) => b[i] * 256 + b[i + 1];
+  const u32 = (i) =>
+    b[i] * 16777216 +
+    b[i + 1] * 65536 +
+    b[i + 2] * 256 +
+    b[i + 3];
+
+  let temperature = u16(0);
+  if (temperature & 0x8000) temperature -= 0x10000;
+
+  return {
+    data: {
+      temperature_c: temperature / 100,
+      humidity_percent: u16(2) / 100,
+      pressure_hpa: u16(4) / 10,
+      gas_milliohms: u32(6) / 100,
+      battery_mv: u16(10)
+    }
+  };
+}
+```
+
+## Capturas de The Things Stack
+
+Una vez que el dispositivo se une a la red, sus uplinks aparecen en los datos en vivo:
+
+![Uplinks recibidos del dispositivo BME680](docs/result_01.png)
+
+En la aplicación de The Things Stack, configura el formatter de uplink con el decoder anterior:
+
+![Configuración del formatter de uplink en The Things Stack](docs/result_02.png)
+
+El código del formatter debe decodificar el payload de 12 bytes del nodo:
+
+![Decoder JavaScript del payload del BME680](docs/result_03.png)
+
+The Things Stack muestra también las mediciones ya decodificadas:
+
+![Datos del BME680 decodificados en The Things Stack](docs/result_04.png)
+
+## Compilar y comprobar
+
+Abre esta carpeta como proyecto PlatformIO, compila y carga el firmware. Abre el monitor serie a **115200 baudios**. En los eventos de TTN, selecciona el puerto 2 y comprueba que el payload decodificado contiene temperatura, humedad, presión, `gas_milliohms` y `battery_mv`.
+
+## Referencia y licencia
+
+La máquina de estados y la gestión del sensor siguen los ejemplos oficiales [`LoRaWan_MultiSensor`](https://github.com/HelTecAutomation/CubeCell-Arduino/tree/master/libraries/LoRa/examples/LoRaWAN/LoRaWAN_Sensors/LoRaWan_MultiSensor) y [`BME680_test.ino`](https://github.com/HelTecAutomation/CubeCell-Arduino/blob/master/libraries/Sensor_ThirdParty/examples/BME680/BME680_test/BME680_test.ino). `BME680_Class` forma parte de `Sensor_ThirdParty` del framework Heltec y declara licencia GPL-3.0; la dependencia conserva su licencia propia, distinta de la licencia MIT del código original del proyecto.

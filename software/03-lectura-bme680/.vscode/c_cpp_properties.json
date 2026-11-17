@@ -9,6 +9,7 @@
             "name": "PlatformIO",
             "includePath": [
                 "/Users/moises/Documents/MakersBierzo/nodo-lorawan-bme680/software/03-lectura-bme680/src",
+                "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/RGB/src",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/Sensor_ThirdParty/src",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/OneWire",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/cores/asr650x",
@@ -36,7 +37,6 @@
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/LoraWan102/src",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/LoraWan104/src",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/OnBoardGPS/src",
-                "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/RGB/src",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/SensorBasic/src",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/Servo/src",
                 "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/Time",
@@ -46,6 +46,7 @@
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
                     "/Users/moises/Documents/MakersBierzo/nodo-lorawan-bme680/software/03-lectura-bme680/src",
+                    "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/RGB/src",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/Sensor_ThirdParty/src",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/OneWire",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/cores/asr650x",
@@ -73,7 +74,6 @@
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/LoraWan102/src",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/LoraWan104/src",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/OnBoardGPS/src",
-                    "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/RGB/src",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/SensorBasic/src",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/Servo/src",
                     "/Users/moises/.platformio/packages/framework-arduinocubecell/libraries/Time",
